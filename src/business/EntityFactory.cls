@@ -1,27 +1,29 @@
 /*------------------------------------------------------------------------
   File        : EntityFactory
   Purpose     : Factory for creating singleton instances of business entities
-  Syntax      : 
+  Syntax      :
   Description : Implements the Singleton pattern for business entity classes
-  Author(s)   : 
+  Author(s)   :
   Created     : Tue Apr 15 12:01:20 CEST 2025
-  Notes       : 
+  Notes       :
 ----------------------------------------------------------------------*/
 
 USING Progress.Lang.*.
 USING business.CustomerEntity.
+USING business.ItemEntity.
 USING business.EntityFactory.
 
 BLOCK-LEVEL ON ERROR UNDO, THROW.
 
 CLASS business.EntityFactory USE-WIDGET-POOL:
-    
+
     /* Singleton instance of this factory */
     VAR PRIVATE STATIC EntityFactory objInstance.
-    
+
     /* Singleton instances of business entities */
     VAR PRIVATE CustomerEntity objCustomerEntityInstance.
-    
+    VAR PRIVATE ItemEntity objItemEntityInstance.
+
     /*------------------------------------------------------------------------------
      Purpose: Private constructor to prevent direct instantiation
      Notes:
@@ -29,7 +31,7 @@ CLASS business.EntityFactory USE-WIDGET-POOL:
     CONSTRUCTOR PRIVATE EntityFactory():
         /* Private constructor to enforce singleton pattern */
     END CONSTRUCTOR.
-    
+
     /*------------------------------------------------------------------------------
      Purpose: Get the singleton instance of the factory
      Notes:
@@ -37,10 +39,10 @@ CLASS business.EntityFactory USE-WIDGET-POOL:
     METHOD PUBLIC STATIC business.EntityFactory GetInstance():
         IF objInstance = ? THEN
             objInstance = NEW business.EntityFactory().
-        
+
         RETURN objInstance.
     END METHOD.
-    
+
     /*------------------------------------------------------------------------------
      Purpose: Get the singleton instance of CustomerEntity
      Notes:
@@ -48,10 +50,21 @@ CLASS business.EntityFactory USE-WIDGET-POOL:
     METHOD PUBLIC CustomerEntity GetCustomerEntity():
         IF objCustomerEntityInstance = ? THEN
             objCustomerEntityInstance = NEW CustomerEntity().
-        
+
         RETURN objCustomerEntityInstance.
     END METHOD.
-        
+
+    /*------------------------------------------------------------------------------
+     Purpose: Get the singleton instance of ItemEntity
+     Notes:
+    ------------------------------------------------------------------------------*/
+    METHOD PUBLIC ItemEntity GetItemEntity():
+        IF objItemEntityInstance = ? THEN
+            objItemEntityInstance = NEW ItemEntity().
+
+        RETURN objItemEntityInstance.
+    END METHOD.
+
     /*------------------------------------------------------------------------------
      Purpose: Reset all entity instances (for testing or cleanup)
      Notes:
@@ -59,8 +72,12 @@ CLASS business.EntityFactory USE-WIDGET-POOL:
     METHOD PUBLIC VOID ResetInstances():
         IF VALID-OBJECT(objCustomerEntityInstance) THEN
             DELETE OBJECT objCustomerEntityInstance.
-        
-        objCustomerEntityInstance = ?.    
+
+        IF VALID-OBJECT(objItemEntityInstance) THEN
+            DELETE OBJECT objItemEntityInstance.
+
+        objCustomerEntityInstance = ?.
+        objItemEntityInstance = ?.
     END METHOD.
-    
+
 END CLASS.
